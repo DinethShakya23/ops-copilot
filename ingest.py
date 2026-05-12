@@ -34,6 +34,42 @@ from config import (
     CONFLUENCE_URL, CONFLUENCE_USERNAME, CONFLUENCE_API_TOKEN, CONFLUENCE_SPACE_KEY
 )
 
+#for ingest Dashboard
+import hashlib
+import json
+from datetime import datetime
+
+
+#below code section also for ingest dashboard functionality
+STATE_FILE = 'ingestion_state.json'
+
+def load_ingestion_state() -> dict:
+    '''Load the record of previously ingested files.'''
+    if not Path(STATE_FILE).exists():
+        return {}
+    with open(STATE_FILE) as f:
+        return json.load(f).get('files', {})
+
+def save_ingestion_state(state: dict):
+    '''Save the updated file state after ingestion.'''
+    with open(STATE_FILE, 'w') as f:
+        json.dump({
+            'last_run': datetime.now().isoformat(),
+            'total_files': len(state),
+            'files': state
+        }, f, indent=2)
+    print(f'State saved: {len(state)} files tracked')
+
+def file_hash(filepath: str) -> str:
+    '''Compute MD5 hash of a file's contents.'''
+    hasher = hashlib.md5()
+    with open(filepath, 'rb') as f:
+        for chunk in iter(lambda: f.read(65536), b''):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+    
+
 # ── Step 1: Initialize the embedding model ───────────────
 print('Loading embedding model...')
 embedder = SentenceTransformer(EMBEDDING_MODEL)
@@ -307,10 +343,15 @@ def run_ingestion():
     print('=' * 50)
     print('Ingestion complete!')
     print('=' * 50)
-
-
-
     
+    # ── Save ingestion state ──────────────────────────────
+    state = load_ingestion_state()
+    for doc in all_docs:
+        source = doc.metadata.get('source', 'unknown')
+        if Path(source).exists():
+            state[source] = file_hash(source)
+    save_ingestion_state(state)
+
 if __name__ == '__main__':
     if '--clear' in sys.argv:
         clear_collection()
