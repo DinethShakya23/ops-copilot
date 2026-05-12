@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-05-12T11:20:00",
+  "provider": "gemini",
+  "model": "gemini-flash-latest",
+  "num_questions": 5,
+  "faithfulness": 0.92,
+  "answer_relevancy": 0.88,
+  "per_question": [
+    {
+      "question": "What version of WSO2 API Manager is CustomerX running?",
+      "faithfulness": 0.95,
+      "answer_relevancy": 0.90
+    },
+    {
+      "question": "What AKS node pool type does CustomerX use?",
+      "faithfulness": 0.89,
+      "answer_relevancy": 0.85
+    },
+    {
+      "question": "What are the escalation contacts for CustomerX?",
+      "faithfulness": 0.93,
+      "answer_relevancy": 0.91
+    },
+    {
+      "question": "Are there any known issues for CustomerX?",
+      "faithfulness": 0.90,
+      "answer_relevancy": 0.87
+    },
+    {
+      "question": "What Kubernetes version does CustomerX use?",
+      "faithfulness": 0.91,
+      "answer_relevancy": 0.88
+    }
+  ]
+}
