@@ -2,6 +2,7 @@
 venv/
 __pycache__/
 chroma_db/
+CREDENTIALS.md
 query_log.json
 audit_log.json
 users.json
